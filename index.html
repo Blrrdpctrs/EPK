@@ -476,8 +476,6 @@
             font-weight: 400;
             color: #fff;
             line-height: 1;
-            /* Monospace font für Zahlen kann verhindern, dass sie beim Hochzählen wackeln, 
-               aber Inter ist usually okay. */
             font-variant-numeric: tabular-nums; 
         }
 
@@ -540,7 +538,20 @@
             .social-icons-left, .top-right-text { display: none; }
             .centered-layer-headline { top: 40%; }
             .brand-name { font-size: 13vw; }
-            .enter-button { grid-column: 1; grid-row: 3; justify-self: center; margin-bottom: 60px; }
+            
+            /* --- MOBILE FIX FÜR BUTTON --- */
+            /* Button weiter oben, damit er nicht auf dem Text liegt */
+            .enter-button { 
+                grid-column: 1; 
+                grid-row: 3; 
+                justify-self: center; 
+                margin-bottom: 140px; /* Viel Platz nach unten für den Text */
+            }
+            
+            /* Text am unteren Rand lassen */
+            .centered-layer-bottom {
+                bottom: 40px; 
+            }
             
             .music-section { padding: 80px 20px; }
             .track-cover { width: 60px; height: 60px; margin-right: 20px; }
@@ -791,6 +802,7 @@
         }
 
         // --- 4. COUNT UP ANIMATION (STATS) ---
+        // Lässt Zahlen hochzählen, sobald sie im Bild sind
         const statsObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -820,7 +832,7 @@
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 
-                // Ease-Out Funktion für sanftes Ende
+                // Ease-Out Funktion für sanftes Ende der Animation
                 const easeProgress = 1 - Math.pow(1 - progress, 3); 
                 
                 const currentVal = start + (easeProgress * (end - start));
