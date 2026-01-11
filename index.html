@@ -578,7 +578,7 @@
             .site-footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
         }
 
-        /* --- BOOKING MODAL STYLES (NEU) --- */
+  /* --- BOOKING MODAL STYLES (KORRIGIERT) --- */
         .booking-modal {
             display: none; 
             position: fixed;
@@ -592,12 +592,14 @@
             backdrop-filter: blur(10px); 
             opacity: 0;
             transition: opacity 0.3s ease;
+            
+            /* FIX: Zentrierung muss hier hin, damit sie beim Schließen bleibt */
+            justify-content: center;
+            align-items: center;
         }
 
         .booking-modal.show {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            /* display: flex; wird vom JS gesetzt, brauchen wir hier nicht zwingend */
             opacity: 1;
         }
 
@@ -616,7 +618,8 @@
         .booking-modal.show .modal-content {
             transform: scale(1);
         }
-
+        
+        /* REST DES CSS BLEIBT GLEICH (close-modal, inputs etc.) */
         .close-modal {
             color: #aaa;
             float: right;
