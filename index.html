@@ -578,7 +578,7 @@
             .site-footer { flex-direction: column; gap: 20px; padding: 30px 20px; text-align: center; }
         }
 
-  /* --- BOOKING MODAL STYLES (KORRIGIERT) --- */
+        /* --- BOOKING MODAL STYLES (FINAL FIX) --- */
         .booking-modal {
             display: none; 
             position: fixed;
@@ -593,13 +593,12 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             
-            /* FIX: Zentrierung muss hier hin, damit sie beim Schließen bleibt */
+            /* Zentrierung in der Basis-Klasse, damit keine Animation buggt */
             justify-content: center;
             align-items: center;
         }
 
         .booking-modal.show {
-            /* display: flex; wird vom JS gesetzt, brauchen wir hier nicht zwingend */
             opacity: 1;
         }
 
@@ -607,7 +606,7 @@
             background-color: #0a0a0a;
             border: 1px solid #333;
             padding: 40px;
-            width: 90%;
+            width: 90%; /* Mobile Freundlicher */
             max-width: 500px;
             position: relative;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
@@ -618,8 +617,7 @@
         .booking-modal.show .modal-content {
             transform: scale(1);
         }
-        
-        /* REST DES CSS BLEIBT GLEICH (close-modal, inputs etc.) */
+
         .close-modal {
             color: #aaa;
             float: right;
@@ -887,10 +885,10 @@
 
     <div id="booking-modal" class="booking-modal">
         <div class="modal-content">
-            <span class="close-modal">&times;</span>
+            <span class="close-modal">×</span>
             <h2>BOOKING REQUEST</h2>
             
-            <form action="https://formspree.io/f/xzddplga" method="POST">
+            <form action="https://formspree.io/f/DEINE_FORMSPREE_ID" method="POST">
                 
                 <div class="input-group">
                     <input type="text" name="name" required placeholder=" ">
@@ -1004,35 +1002,39 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- 5. BOOKING MODAL LOGIC (NEU) ---
+        // --- 5. BOOKING MODAL LOGIC (FIXED SCROLL) ---
         const modal = document.getElementById("booking-modal");
         const btn = document.getElementById("open-booking");
         const span = document.getElementsByClassName("close-modal")[0];
 
-        // Öffnen
-        btn.onclick = function(e) {
-            e.preventDefault(); 
-            modal.style.display = "flex";
-            setTimeout(() => {
-                modal.classList.add("show");
-            }, 10);
-        }
-
-        // Schließen (X)
-        span.onclick = function() {
+        // Funktion zum Schließen (wird mehrfach verwendet)
+        function closeModal() {
             modal.classList.remove("show");
+            document.body.style.overflow = ""; // SCROLLEN WIEDER ERLAUBEN
             setTimeout(() => {
                 modal.style.display = "none";
             }, 300);
         }
 
-        // Schließen (Klick daneben)
+        // Öffnen
+        btn.onclick = function(e) {
+            e.preventDefault(); 
+            modal.style.display = "flex"; // Zuerst anzeigen (damit opacity transition greift)
+            document.body.style.overflow = "hidden"; // SCROLLEN VERBIETEN
+            
+            // Kleiner Timeout, damit der Browser den display-change registriert
+            setTimeout(() => {
+                modal.classList.add("show");
+            }, 10);
+        }
+
+        // Schließen per X
+        span.onclick = closeModal;
+
+        // Schließen per Klick daneben
         window.onclick = function(event) {
             if (event.target == modal) {
-                modal.classList.remove("show");
-                setTimeout(() => {
-                    modal.style.display = "none";
-                }, 300);
+                closeModal();
             }
         }
     </script>
